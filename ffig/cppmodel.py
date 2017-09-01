@@ -157,9 +157,15 @@ class Class(object):
 
 class Model(object):
 
-    def __init__(self, translation_unit, force_noexcept=False):
+    def _check_translation_unit(self, translation_unit):
         if len(translation_unit.diagnostics) != 0:
-            raise Exception("Compiler warnings or errors in translation unit {}:".format(translation_unit.spelling))
+            e = "Compiler warnings or errors in translation unit {}:".format(translation_unit.spelling)
+            for d in translation_unit.diagnostics:
+                e += "\n  {}".format(d)
+            raise Exception(e)
+
+    def __init__(self, translation_unit, force_noexcept=False):
+        self._check_translation_unit(translation_unit)
         self.filename = translation_unit.spelling
         self.functions = []
         self.classes = []
@@ -170,8 +176,6 @@ class Model(object):
             self.filename, [c.name for c in self.classes], [f.name for f in self.functions])
 
     def extend(self, translation_unit):
-        if len(translation_unit.diagnostics) != 0:
-            raise Exception("Compiler warnings or errors in translation unit {}:".format(translation_unit.spelling))
         m = Model(translation_unit)
         # Check for duplicates and inconsistencies.
         for new_class in m.classes:

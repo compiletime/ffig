@@ -473,8 +473,7 @@ class Diagnostic(object):
             options = conf.lib.clang_defaultDiagnosticDisplayOptions()
         if options & ~Diagnostic._FormatOptionsMask:
             raise ValueError('Invalid format options')
-        formatted = conf.lib.clang_formatDiagnostic(self, options)
-        return conf.lib.clang_getCString(formatted)
+        return conf.lib.clang_formatDiagnostic(self, options)
 
     def __repr__(self):
         return "<Diagnostic severity %r, location %r, spelling %r>" % (
