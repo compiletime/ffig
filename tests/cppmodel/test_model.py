@@ -15,6 +15,7 @@ def test_repr():
         str(model),
         "<cppmodel.Model filename=t.cpp, classes=['A'], functions=['foo']>")
 
+
 @raises(Exception)
 def test_broken_code():
     source = 'class A{}'

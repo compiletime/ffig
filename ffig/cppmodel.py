@@ -159,7 +159,8 @@ class Model(object):
 
     def _check_translation_unit(self, translation_unit):
         if len(translation_unit.diagnostics) != 0:
-            e = "Compiler warnings or errors in translation unit {}:".format(translation_unit.spelling)
+            e = "Compiler warnings or errors in translation unit {}:".format(
+                translation_unit.spelling)
             for d in translation_unit.diagnostics:
                 e += "\n  {}".format(d)
             raise Exception(e)
@@ -217,5 +218,5 @@ class Model(object):
         # library implementation details.
         self.functions = [
             f for f in self.functions if not f.name.startswith('__')]
-        self.classes = [
-            c for c in self.classes if not len(c.name) == 0 and not c.name.startswith('__')]
+        self.classes = [c for c in self.classes if not len(
+            c.name) == 0 and not c.name.startswith('__')]
