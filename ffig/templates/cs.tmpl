@@ -68,12 +68,12 @@ namespace {{module.name}}_c {
     [DllImport("lib{{module.name}}_c")]
     private static extern int {{module.name}}_{{class.name}}_dispose(IntPtr c_obj);
   {% for method in class.constructors %}
-  
+
     [DllImport("lib{{module.name}}_c")]
     private static extern int {{module.name}}_{{class.name}}_create({{method_c_parameters(method, trailing_comma=True)}}out IntPtr ptr);
   {% endfor %}
   {% for method in class.methods %}
-  
+
     {% if not method.returns_void %}
     [DllImport("lib{{module.name}}_c")]
     private static extern int {{module.name}}_{{class.name}}_{{method.name}}(IntPtr c_obj, {{method_c_parameters(method, trailing_comma=True)}}out {{method.return_type|to_dotnet_output_param}} rv);
@@ -82,11 +82,11 @@ namespace {{module.name}}_c {
     private static extern int {{module.name}}_{{class.name}}_{{method.name}}(IntPtr c_obj, {{method_c_parameters(method)}});
     {% endif %}
   {% endfor %}
-  
+
     protected IntPtr c_obj_;
   {% if not class.is_abstract %}
   {% for method in class.constructors %}
-  
+
     public {{class.name}}({{method_parameters(method)}}) {
       int rc = {{module.name}}_{{class.name}}_create({{method_arguments(method, trailing_comma=True)}}out c_obj_);
       if(rc != 0) {
@@ -95,19 +95,19 @@ namespace {{module.name}}_c {
     }
   {% endfor %}
   {% endif %}
-  
+
     protected {{class.name}}() {
     }
 
     protected {{class.name}}(IntPtr c_obj) {
       c_obj_ = c_obj;
     }
-    
+
     ~{{class.name}}() {
       {{module.name}}_{{class.name}}_dispose(c_obj_);
     }
   {% for method in class.methods %}
-  
+
     {% if not method.returns_void %}
     public {{method.return_type|to_dotnet_return_type}} {{method.name}}({{method_parameters(method)}}) {
       {{method.return_type|to_dotnet_output_value("rv")}};
@@ -116,8 +116,8 @@ namespace {{module.name}}_c {
         throw new {{module.name}}_c.Exception();
       }
       {% if method.returns_nullable %}
-      if(rv == IntPtr.Zero) { 
-        return null; 
+      if(rv == IntPtr.Zero) {
+        return null;
       }
       {% endif %}
       return {{method.return_type|to_dotnet_return_value("rv")}};
@@ -133,10 +133,10 @@ namespace {{module.name}}_c {
   {% endfor %}
   }
   {% for impl in class.impls %}
-  
+
   public class {{impl.name}} : {{module.name}}_c.{{class.name}} {
-    
     {% for method in impl.constructors %}
+
     [DllImport("lib{{module.name}}_c")]
     private static extern int {{module.name}}_{{impl.name}}_create({{method_c_parameters(method, trailing_comma=True)}}out IntPtr ptr);
 
@@ -146,10 +146,10 @@ namespace {{module.name}}_c {
         throw new {{module.name}}_c.Exception();
       }
     }
-  {% endfor %}
+    {% endfor %}
   }
   {% endfor %}
-  
+
 {% endfor %}
 }
 
